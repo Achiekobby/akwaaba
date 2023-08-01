@@ -156,6 +156,7 @@ include_once "header.php";
                 <div class="row">
                   <div class="col-md-8">
                     <p class="text-center">
+
                       <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
                     </p>
 
