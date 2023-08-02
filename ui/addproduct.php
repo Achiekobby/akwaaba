@@ -14,7 +14,7 @@ $showProductsUrl = $baseUrl . "/akwaaba/ui/";
 
 if (isset($_POST['btnsave'])) {
 
-    $productlist    = $_POST['txtselect_option'];
+    $productlist    = $_POST['txtselect_product'];
     $unit       = "#";
 
     //* Select Inputs
@@ -150,7 +150,7 @@ if (isset($_POST['btnsave'])) {
 
                     <div class="form-group">
                       <label>Product Name</label>
-                      <select class="form-control" name="txtselect_option" required>
+                      <select class="form-control" name="txtselect_product" required>
                           <option value="" disabled selected>Select Product</option>
 
                           <?php
@@ -158,9 +158,10 @@ if (isset($_POST['btnsave'])) {
                           $select->execute();
                           $rows = $select->fetchAll(PDO::FETCH_ASSOC);
 
+
                           foreach ($rows as $row) :
                           ?>
-                              <option value="<?php echo $row['prolid']; ?>"><?php echo $row['productlist']; ?></option>
+                              <option value="<?php echo $row['productlist']; ?>"><?php echo $row['productlist']; ?></option>
                           <?php
                           endforeach;
                           ?>
@@ -185,7 +186,7 @@ if (isset($_POST['btnsave'])) {
 
                           foreach ($rows as $row) :
                           ?>
-                              <option value="<?php echo $row['brvid']; ?>"><?php echo $row['brvcategory']; ?></option>
+                              <option value="<?php echo $row['brvcategory']; ?>"><?php echo $row['brvcategory']; ?></option>
                           <?php
                           endforeach;
                           ?>

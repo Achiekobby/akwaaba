@@ -107,17 +107,8 @@ $products = $select->fetchAll(PDO::FETCH_ASSOC);
             $consignor_name = $consignor->fetch(PDO::FETCH_COLUMN);
 
             echo htmlspecialchars($consignor_name);
-          ?>        <td>
-          <?php
-            $customer_id = $product['customer']; // Assuming you have an 'id' column in the tbl_product table
-            $customer = $pdo->prepare("SELECT customer FROM tbl_customer WHERE cusid = :cusid");
-            $customer->bindParam(':cusid', $customer_id);
-            $customer->execute();
-            $customer_name = $customer->fetch(PDO::FETCH_COLUMN);
-
-            echo htmlspecialchars($customer_name);
           ?>
-        </td>
+          <td><?php echo htmlspecialchars($product['customer']) ?></td>
         <td>
           <?php
             $meter_id = $product['meter']; // Assuming you have an 'id' column in the tbl_product table

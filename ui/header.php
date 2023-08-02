@@ -42,6 +42,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <!-- fullCalendar -->
 <link rel="stylesheet" href="../plugins/fullcalendar/main.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
  <!-- Font Awesome Icons -->
  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
@@ -300,7 +301,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
           </li>
 
-         
+
 
           <li class="nav-item">
             <a href="meter.php" class="nav-link">

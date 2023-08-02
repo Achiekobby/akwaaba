@@ -35,6 +35,18 @@ $result_users = $stmt_users->fetch(PDO::FETCH_ASSOC);
 //* Getting the count from the result_users of the query
 $total_users = $result_users['total_users'];
 
+
+//***************************CHART DATA ****************************/
+$stmt_products = $pdo->prepare('SELECT product FROM tbl_product');
+$stmt_products->execute();
+$products_data = $stmt_products->fetchAll(PDO::FETCH_ASSOC);
+
+//* Calculate the counts
+$productQuantities  = array_count_values(array_column($products_data, 'product'));
+$productNames       = array_keys($productQuantities);
+$productQuantities  = array_values($productQuantities);
+
+
 if($_SESSION['useremail']==""){
   header('location:../index.php');
 }
@@ -144,6 +156,46 @@ include_once "header.php";
           <!-- /.col -->
         </div>
         <!-- /.row -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Bills Per Product</strong>
+                    <div style="width: 400px; height: 400px;">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                  <strong class="align">Customer Bills Per Month</strong>
+                    <form method="post" id="yearForm" >
+                    <input class="btn btn-success float-right mr-2 btn-sm" type="submit" value="Show Chart">
+
+                      <select class="form-select float-right mr-2" name="year" id="year">
+                          <?php
+                            $query = "SELECT DISTINCT YEAR(created_at) AS year FROM tbl_product";
+                            $result = $pdo->query($query);
+
+                            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                $selected = (date('Y') == $row['year']) ? 'selected' : '';
+                                echo '<option value="' . $row['year'] . '" ' . $selected . '>' . $row['year'] . '</option>';                            }
+                          ?>
+                        </select>
+                    </form>
+                    <p class="text-center">
+
+                      <!-- <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong> -->
+                    </p>
+                    <div style="width: 90%; margin: auto;">
+                        <canvas id="billsChart"> <<?php echo "true"; ?></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="row">
           <div class="col-md-12">
@@ -151,33 +203,7 @@ include_once "header.php";
               <div class="card-header">
                 <h5 class="card-title">Monthly Recap Report</h5>
               </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-8">
-                    <p class="text-center">
 
-                      <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
-                    </p>
-
-                    <div class="chart">
-                      <!-- Sales Chart Canvas -->
-                      <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
-                    </div>
-                    <!-- /.chart-responsive -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-md-4">
-                    <p class="text-center">
-                      <strong>Goal Completion</strong>
-                    </p>
-
-                    <!-- /.progress-group -->
-                  </div>
-                  <!-- /.col -->
-                </div>
-                <!-- /.row -->
-              </div>
               <!-- ./card-body -->
               <div class="card-footer">
                 <div class="row">
@@ -255,3 +281,110 @@ include_once "footer.php";
 
 
 ?>
+
+<script>
+    // Get data from PHP variables
+    const productNames = <?php echo json_encode($productNames); ?>;
+    const productQuantities = <?php echo json_encode($productQuantities); ?>;
+
+    //* Create the doughnut chart
+    const doughnutChart = new Chart(document.getElementById('doughnutChart'), {
+        type: 'doughnut',
+        data: {
+            labels: productNames,
+            datasets: [{
+                data: productQuantities,
+                backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+        }
+    });
+</script>
+
+<script>
+        //* JavaScript code to fetch chart data and create the grouped bar chart using Chart.js
+        const yearForm = document.getElementById('yearForm');
+        const ctx = document.getElementById('billsChart').getContext('2d');
+        let billsChart;
+
+        const colors = [
+            '#2a9d8f', '#f3722c', '#264653', '#f9c74f', '#90be6d', '#43aa8b',
+            '#577590', '#f9844a', '#a5a58d', '#f8961e', '#f94144', '#e9c46a'
+        ];
+
+        const monthsList = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        yearForm.addEventListener('change', function() {
+            const formData = new FormData(yearForm);
+            const selectedYear = formData.get('year');
+
+            fetchChart(selectedYear);
+        });
+
+        function fetchChart(year) {
+            // Replace 'YOUR_DB_HOST', 'YOUR_DB_USER', 'YOUR_DB_PASSWORD', and 'YOUR_DB_NAME' with your actual database credentials.
+            const serverUrl = window.location.origin;
+            const url = `${serverUrl}/akwaaba/ui/fetch_chart_data.php?year=${year}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(data);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function updateChart(data) {
+    if (billsChart) {
+        billsChart.destroy(); // Destroy the existing chart before creating a new one.
+    }
+
+    const labels = Object.keys(data); // Get the customer names as labels.
+
+    const months = Array.from(new Set(Object.values(data).flatMap(Object.keys))); // Get unique months.
+
+    // Sort the months in ascending order (January to December).
+    months.sort((a, b) => parseInt(a.split('-')[1]) - parseInt(b.split('-')[1]));
+
+    const datasets = labels.map((customer, index) => {
+        const customerData = data[customer];
+        return {
+            label: customer,
+            data: months.map(month => customerData[month] || 0), // Use 0 for months without data.
+            backgroundColor: colors[index % colors.length], // Use fixed colors from the colors array.
+            stack: index, // Group bars by customer index.
+        };
+    });
+
+    // Convert month numbers to month names
+    const formattedLabels = months.map(month => monthsList[parseInt(month.split('-')[1]) - 1]);
+
+    billsChart = new Chart(ctx, {
+        type: 'bar', // Change the chart type to 'bar' for grouped bar chart.
+        data: {
+            labels: formattedLabels,
+            datasets: datasets,
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: false, // Not stacked.
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+}
+
+        // Fetch the default chart data for the current year when the page loads.
+        const defaultYear = <?php echo date('Y'); ?>;
+        fetchChart(defaultYear);
+    </script>
