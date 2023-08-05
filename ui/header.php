@@ -56,6 +56,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- fullCalendar -->
 <link rel="stylesheet" href="../plugins/fullcalendar/main.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
  <!-- Font Awesome Icons -->
  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
