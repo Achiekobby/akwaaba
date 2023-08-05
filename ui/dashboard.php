@@ -65,8 +65,39 @@ include_once "header.php";
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Starter Page</li> -->
+              <li class="breadcrumb-item text-success text-bold">Temp:</li>
+              <form id="temperatureForm">
+                <input type="number" name="temperature" id="temperature" required>
+                <button class="btn btn-success" type="submit">Set Temperature</button>
+              </form>
+              <script>
+                // AJAX request to handle form submission without page refresh
+                $(document).ready(function() {
+                    $('#temperatureForm').submit(function(event) {
+                        event.preventDefault();
+                        var formData = $(this).serialize();
+
+                        const serverUrl = window.location.origin;
+                        const url = `${serverUrl}/akwaaba/ui/save_temperature.php`;
+
+                        $.ajax({
+                            type: 'POST',
+                            url:url,
+                            data: formData,
+                            success: function(response) {
+                                $('#temperatureForm')[0].reset();
+                                console.log(response);
+                                location.reload();
+                            },
+                            error: function() {
+                                // $('#response').text('Error occurred while saving the temperature.');
+                                console.log('Error occurred while saving the temperature.');
+                            }
+                        });
+                    });
+                });
+              </script>
+              <!-- End of the temperature form submission -->
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -197,67 +228,8 @@ include_once "header.php";
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-title">Monthly Recap Report</h5>
-              </div>
-
-              <!-- ./card-body -->
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 17%</span>
-                      <h5 class="description-header">$35,210.43</h5>
-                      <span class="description-text">TOTAL CUSTOMERS</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i> 0%</span>
-                      <h5 class="description-header">$10,390.90</h5>
-                      <span class="description-text">TOTAL CONSIGNORS</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block border-right">
-                      <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 20%</span>
-                      <h5 class="description-header">$24,813.53</h5>
-                      <span class="description-text">TOTAL WAYBILL</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-3 col-6">
-                    <div class="description-block">
-                      <span class="description-percentage text-danger"><i class="fas fa-caret-down"></i> 18%</span>
-                      <h5 class="description-header">1200</h5>
-                      <span class="description-text">TOTAL USERS</span>
-                    </div>
-                    <!-- /.description-block -->
-                  </div>
-                </div>
-                <!-- /.row -->
-              </div>
-              <!-- /.card-footer -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-        </div>
-
 
         <!-- /.row -->
-
-
-
-
 
               </div>
             </div>

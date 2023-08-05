@@ -4,6 +4,12 @@ include_once 'connectdb.php';
 session_start();
 include_once "header.php";
 
+$sql = "SELECT * FROM temperature_data ORDER BY date DESC LIMIT 1";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$latestTemperature = $stmt->fetch(PDO::FETCH_ASSOC);
+$latestTemperatureValue = $latestTemperature['temperature'];
+
 if (isset($_GET['serial_number'])) {
     $serial_number = $_GET['serial_number'];
 
@@ -112,7 +118,7 @@ if (isset($_GET['serial_number'])) {
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-4 invoice-col">
-                        <h5><strong>CUSTOMER:</strong> <?php echo $customer->customer ?>:
+                        <h5><strong>CUSTOMER:</strong> <?php echo $product->customer ?>
                         <!-- <br><strong>CUSTOMER NO:</strong> GB1607601 -->
                         <br><strong>DESTINATION:</strong><?php echo strtoupper($product->destination); ?>
                         <br><strong>DRIVER:</strong> <?php echo strtoupper($product->driver); ?>
@@ -245,7 +251,7 @@ if (isset($_GET['serial_number'])) {
                           <div class="col">
                             <div class="form-group">
                               <label for="temp">Temp:</label><span id="temperature_number"></span>
-                              <input type="number" class="form-control" id="temp" name="temp">
+                              <input type="number" class="form-control" id="temp" name="temp" value="<?php echo $latestTemperatureValue; ?>" readonly>
                             </div>
                           </div>
                         </div>
