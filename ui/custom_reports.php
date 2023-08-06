@@ -20,6 +20,10 @@ function computeTotalQuantities($pdo, $result)
     {
         return trim(htmlspecialchars($value));
     }
+
+
+$current_date = (new DateTime())->format('Y-M-d');
+$current_time = (new DateTime())->format('H:i:s');
 ?>
 
 
@@ -64,7 +68,7 @@ function computeTotalQuantities($pdo, $result)
   <div class="container-fluid">
     <!-- Info boxes -->
     <div class="row">
-      <div class="col-lg-6 col-6">
+      <div class="col-lg-6 col-6"id = "custom_sorting">
         <div class="small-box bg-warning">
           <div class="inner">
             <h3>Custom Filter Report</h3>
@@ -76,7 +80,7 @@ function computeTotalQuantities($pdo, $result)
         </div>
       </div>
 
-      <div class="col-lg-6 col-6">
+      <div class="col-lg-6 col-6" id="periodic_sorting">
         <a href="report.php" class="small-box bg-info">
           <div class="inner">
             <h3>Periodic Reports</h3>
@@ -91,13 +95,13 @@ function computeTotalQuantities($pdo, $result)
 
 <div class="row">
   <div class="col-lg-12">
-    <div class="card">
+    <div class="card" id="printable_report">
       <div class="card-header text-bold bg-success">
         Custom Filter Results
       </div>
       <div class="card-body">
   <div class="row">
-    <form class="form-inline float-right" method="POST">
+    <form class="form-inline float-right" method="POST" id="filter_form">
       <div class="col-lg-3">
           <select class="form-control mx-2" name="select_customer" id="select_customer">
             <option value="">Select a Customer</option>
@@ -142,6 +146,16 @@ function computeTotalQuantities($pdo, $result)
     </form/>
   </div>
   <hr>
+  <div class="report_heading mt-4" style="display: none;">
+          <h4 class="ml-3">
+            <i class="fa fa-gears"></i> WAYBILL.
+            <small class="mr-2 text-bold float-right">Date: <?php echo $current_date ?></small>
+          </h4>
+          <p class="ml-3 text-bold">Consignor Name: ___________________________________________</p>
+          <p class="ml-3 text-bold">Product Report Period: ______________________________________</p>
+          <p class="ml-3 text-bold">Report Generated At: <?php echo $current_time; ?></p>
+          <hr> <!-- A horizontal line to separate the sections -->
+      </div>
   <?php
 
     //* checking to see if the apply button has been pressed
@@ -204,7 +218,7 @@ function computeTotalQuantities($pdo, $result)
         if ($stmt->rowCount() > 0) {
           echo "<p class='text-bold'>Total Quantities for Filtered Items: <h1><span class='badge bg-primary'>".computeTotalQuantities($pdo, $stmt). "</span></h1></p>";
 
-          echo"<table class='table table-hover'>
+          echo"<table id='table_report' class='table table-hover'>
                 <thead  class='text-center'>
                     <th>#</th>
                     <th>Customer</th>
@@ -245,7 +259,7 @@ function computeTotalQuantities($pdo, $result)
       if ($result->rowCount() > 0) {
       echo "<p class='text-bold'>Total Quantities for All Items: <h1><span class='badge bg-primary'>".computeTotalQuantities($pdo, $result). "</span></h1></p>";
 
-      echo"<table class='table table-hover'>
+      echo"<table id='table_report' class='table table-hover'>
             <thead  class='text-center'>
                 <th>#</th>
                 <th>Customer</th>
@@ -278,6 +292,17 @@ function computeTotalQuantities($pdo, $result)
       }
     }
   ?>
+  <div class="supervisor-signature mt-3" style="display: none;">
+    <p>Supervisor Name: __________________________</p>
+    <p>Supervisor Sign: ___________________________</p>
+    <p>Remarks: _______________________________________________________________________________________________________</p>
+    <hr> <!-- A horizontal line to separate the sections -->
+  </div>
+  <div class="row mt-3">
+      <div class="col-md-12">
+        <a href="#" class="btn btn-primary float-right" id="print">Print</a>
+      </div>
+  </div>
 
 </div>
 
@@ -325,6 +350,53 @@ include_once "footer.php";
     // Reload the page to show the original data without search filters
     location.reload();
   });
+</script>
+
+<script>
+  //* Function to handle the print function for the customer report
+
+  function printTable(tableId){
+        const table             = document.getElementById(tableId);
+        const supervisorSignature = table.querySelector(".supervisor-signature");
+        const reportHeading     = table.querySelector(".report_heading")
+        const printBtn          = document.getElementById("print");
+        const periodic_sorting  = document.getElementById("periodic_sorting");
+        const custom_sorting    = document.getElementById("custom_sorting");
+        const footer = document.getElementById("footer");
+        const copyright = document.getElementById("copyright");
+        const filter_form = document.getElementById("filter_form");
+
+
+        supervisorSignature.style.display ="block";
+        reportHeading.style.display ="block";
+
+        printBtn.style.display ="none";
+        periodic_sorting.style.display ="none";
+        custom_sorting.style.display ="none";
+        footer.style.display ="none";
+        copyright.style.display ="none";
+        filter_form.style.display ="none";
+
+
+        window.print();
+
+        supervisorSignature.style.display ="none";
+        reportHeading.style.display ="none";
+        printBtn.style.display ="block";
+        periodic_sorting.style.display ="block";
+        custom_sorting.style.display ="block";
+        footer.style.display ="block";
+        filter_form.style.display ="block";
+
+
+      }
+
+      const printButton = document.getElementById("print");
+      printButton.addEventListener("click", function(event){
+        event.preventDefault();
+        printTable("printable_report");
+        window.location = window.location.pathname;
+      })
 </script>
 
 
