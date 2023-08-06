@@ -198,13 +198,7 @@ function computeTotalQuantities($pdo, $result)
         if (!empty($select_customer)) {
           $stmt->bindParam(':customer', $select_customer);
         }
-
         $stmt->execute();
-        // echo "<p>{$stmt->rowCount()}</p>";
-        // $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        // echo "<pre>";
-        // print_r($row);
-        // echo "</pre>";
 
         //* Displaying the results
         if ($stmt->rowCount() > 0) {

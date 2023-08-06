@@ -16,7 +16,7 @@
       RHODEL WAYBILL SYSTEM V1.0
     </div>
     <!-- Default to the left -->
-    <strong>Copyright &copy; 2013-2023 <a href="https://rhodelit.com">RHODEL IT CONSULT</a>.</strong> All rights reserved.
+    <strong id="footer">Copyright &copy; 2013-2023 <a href="https://rhodelit.com">RHODEL IT CONSULT</a>.</strong> <span id="copyright">All rights reserved.</span>
   </footer>
 </div>
 <!-- ./wrapper -->

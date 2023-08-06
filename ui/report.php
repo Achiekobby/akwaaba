@@ -5,6 +5,8 @@ session_start();
 
 include_once "header.php";
 
+$current_date = (new DateTime())->format('Y-M-d');
+$current_time = (new DateTime())->format('H:i:s');
 
 ?>
 
@@ -50,7 +52,7 @@ include_once "header.php";
       <div class="container-fluid">
         <!-- Info boxes -->
         <div class="row">
-          <div class="col-lg-6 col-6">
+          <div class="col-lg-6 col-6" id="periodic_sorting">
 
           <div class="small-box bg-info">
           <div class="inner">
@@ -65,7 +67,7 @@ include_once "header.php";
           </div>
           </div>
 
-          <div class="col-lg-6 col-6">
+          <div class="col-lg-6 col-6" id="custom_sorting">
             <a href="custom_reports.php" class="small-box bg-warning">
               <div class="inner">
                 <h3>Custom Sorting</h3>
@@ -74,32 +76,26 @@ include_once "header.php";
               <div class="icon">
                 <i class="fas fa-arrow-circle-right"></i>
               </div>
-              <!-- <a href="#" class="small-box-footer">View Billing Data <i class="fas fa-arrow-circle-right"></i></a> -->
             </a>
           </div>
-
-
-          <!-- <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-                <p>Users</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-        </div> -->
 </div>
 
 <!-- Table to display the report -->
 <div class="row">
   <div class="col-lg-12">
-    <div class="card">
+    <div class="card" id="productCard">
       <div class="card-header text-bold bg-success">
         Products Report
+      </div>
+      <div class="report_heading mt-4" style="display: none;">
+          <h4 class="ml-3">
+            <i class="fa fa-gears"></i> WAYBILL.
+            <small class="mr-2 text-bold float-right">Date: <?php echo $current_date ?></small>
+          </h4>
+          <p class="ml-3 text-bold">Consignor Name: ___________________________________________</p>
+          <p class="ml-3 text-bold">Product Report Period: ______________________________________</p>
+          <p class="ml-3 text-bold">Report Generated At: <?php echo $current_time; ?></p>
+          <hr> <!-- A horizontal line to separate the sections -->
       </div>
       <div class="card-body">
         <div class="row">
@@ -110,7 +106,7 @@ include_once "header.php";
                   <div class="row mt-3">
                       <div class="col-md-12">
                           <form class="form-inline float-right">
-                              <label for="customer_duration">Select Duration:</label>
+                              <label for="customer_duration">Period:</label>
                               <select class="form-control mx-2" name="customer_duration" id="customer_duration">
                                   <option value="quarterly">Quarterly</option>
                                   <option value="midyear">Mid-Year</option>
@@ -121,12 +117,17 @@ include_once "header.php";
                   </div>
                   <div class="row mt-3">
                       <div class="col-md-12" id="customerReportTable">
-                          <!-- Customer report table will be displayed here -->
                       </div>
+                  </div>
+                  <div class="supervisor-signature mt-3" style="display: none;">
+                    <p>Supervisor Name: __________________________</p>
+                    <p>Supervisor Sign: ___________________________</p>
+                    <p>Remarks: _______________________________________________________________________________________________________</p>
+                    <hr> <!-- A horizontal line to separate the sections -->
                   </div>
                   <div class="row mt-3">
                       <div class="col-md-12">
-                        <a href="#" class="btn btn-primary float-right">Print</a>
+                        <a href="#" class="btn btn-primary float-right" id="printProducts">Print</a>
                       </div>
                   </div>
               </div>
@@ -137,9 +138,19 @@ include_once "header.php";
     </div>
   </div>
   <div class="col-lg-12">
-    <div class="card">
+    <div class="card" id="customer_report">
       <div class="card-header text-bold bg-warning">
         Customer Report
+      </div>
+      <div class="report_heading mt-4" style="display: none;">
+          <h4 class="ml-3">
+            <i class="fa fa-gears"></i> WAYBILL.
+            <small class="mr-2 text-bold float-right">Date: <?php echo $current_date ?></small>
+          </h4>
+          <p class="ml-3 text-bold">Consignor Name: ___________________________________________</p>
+          <p class="ml-3 text-bold">Product Report Period: ______________________________________</p>
+          <p class="ml-3 text-bold">Report Generated At: <?php echo $current_time; ?></p>
+          <hr> <!-- A horizontal line to separate the sections -->
       </div>
       <div class="card-body">
         <div class="row">
@@ -164,9 +175,15 @@ include_once "header.php";
                           <!-- Customer report table will be displayed here -->
                       </div>
                   </div>
+                  <div class="supervisor-signature mt-3" style="display: none;">
+                    <p>Supervisor Name: __________________________</p>
+                    <p>Supervisor Sign: ___________________________</p>
+                    <p>Remarks: _______________________________________________________________________________________________________</p>
+                    <hr> <!-- A horizontal line to separate the sections -->
+                  </div>
                   <div class="row mt-3">
                       <div class="col-md-12">
-                        <a href="#" class="btn btn-primary float-right">Print</a>
+                        <a href="#" class="btn btn-primary float-right" id="printCustomers">Print</a>
                       </div>
                   </div>
               </div>
@@ -197,17 +214,6 @@ include_once "footer.php";
 ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- <script>
-  $(document).ready( function () {
-    $('#reportForm').submit(function(event){
-      event.preventDefault();
-      const formData = $(this).serialize();
-
-      const serverUrl = window.location.origin;
-      const url = `${serverUrl}/report_data.php?report_type=`
-    })
-  })
-</script> -->
 
 <script>
         $(document).ready(function() {
@@ -330,4 +336,88 @@ include_once "footer.php";
                 $(targetTable).html(table);
             }
         });
+</script>
+
+    <script>
+      //* Function to handle the print function for the products report
+      function printTableWithSignature(tableId){
+        const table             = document.getElementById(tableId);
+        const supervisorSignature = table.querySelector(".supervisor-signature");
+        const reportHeading     = table.querySelector(".report_heading")
+        const printBtn          = document.getElementById("printProducts");
+        const periodic_sorting  = document.getElementById("periodic_sorting");
+        const custom_sorting    = document.getElementById("custom_sorting");
+        const customer_report   = document.getElementById("customer_report");
+        const footer = document.getElementById("footer");
+        const copyright = document.getElementById("copyright");
+
+        supervisorSignature.style.display ="block";
+        reportHeading.style.display ="block";
+        printBtn.style.display ="none";
+        periodic_sorting.style.display ="none";
+        custom_sorting.style.display ="none";
+        customer_report.style.display ="none";
+        footer.style.display ="none";
+        copyright.style.display ="none";
+
+        window.print();
+
+        supervisorSignature.style.display ="none";
+        reportHeading.style.display ="none";
+        printBtn.style.display ="block";
+        periodic_sorting.style.display ="block";
+        custom_sorting.style.display ="block";
+        customer_report.style.display ="block";
+        footer.style.display ="block";
+        copyright.style.display ="block";
+
+      }
+
+        //* Function to handle the print function for the customer report
+        function printCustomerTableWithSignature(tableId){
+        const table             = document.getElementById(tableId);
+        const supervisorSignature = table.querySelector(".supervisor-signature");
+        const reportHeading     = table.querySelector(".report_heading")
+        const printBtn          = document.getElementById("printCustomers");
+        const periodic_sorting  = document.getElementById("periodic_sorting");
+        const custom_sorting    = document.getElementById("custom_sorting");
+        const product_report   = document.getElementById("productCard");
+        const footer = document.getElementById("footer");
+        const copyright = document.getElementById("copyright");
+
+
+        supervisorSignature.style.display ="block";
+        reportHeading.style.display ="block";
+
+        printBtn.style.display ="none";
+        periodic_sorting.style.display ="none";
+        custom_sorting.style.display ="none";
+        product_report.style.display ="none";
+        footer.style.display ="none";
+        copyright.style.display ="none";
+
+
+        window.print();
+
+        supervisorSignature.style.display ="none";
+        reportHeading.style.display ="none";
+        printBtn.style.display ="block";
+        periodic_sorting.style.display ="block";
+        custom_sorting.style.display ="block";
+        product_report.style.display ="block";
+        footer.style.display ="block";
+        copyright.style.display ="block";
+
+
+      }
+
+      const printButton = document.getElementById("printProducts");
+      const customerPrintButton = document.getElementById("printCustomers");
+      printButton.addEventListener("click", function(){
+        printTableWithSignature("productCard");
+      })
+
+      customerPrintButton.addEventListener("click", function(){
+        printCustomerTableWithSignature("customer_report");
+      })
     </script>
