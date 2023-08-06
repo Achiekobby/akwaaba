@@ -59,7 +59,7 @@ if (isset($_GET['id'])) {
               <div class="col-md-12">
 
                 <table  id="table_brv" class="table table-striped table-hover">
-                  <thead class="text-bold text-center">
+                  <thead class="text-bold">
                     <tr>
                       <td>#</td>
                       <td>Product</td>

@@ -35,6 +35,8 @@ if (isset($_POST['btnsave'])) {
     $truck_header_number  = $_POST['truck_header_number'];
     $truck_trailer_number = $_POST['truck_trailer_number'];
 
+    $user_name= $_SESSION['username'];
+
     //* datetime
     $timezone = new DateTimeZone('Africa/Accra');
     $current_date = new DateTime('now', $timezone);
@@ -49,7 +51,7 @@ if (isset($_POST['btnsave'])) {
     //   }
     // else{
       $insert = $pdo->prepare("insert into tbl_product
-      (product,category, description, volume, opening, closing, unit_number, meter, destination, driver, truck_header_number,truck_trailer_number, customer, order_type, created_at,consignor)
+      (product,category, description, volume, opening, closing, unit_number, meter, destination, driver, truck_header_number,truck_trailer_number, customer, order_type, created_at,consignor,added_by)
       values(
         :product,
         :category,
@@ -66,7 +68,8 @@ if (isset($_POST['btnsave'])) {
         :customer,
         :order_type,
         :created_at,
-        :consignor
+        :consignor,
+        :added_by
         )"
       );
 
@@ -80,6 +83,7 @@ if (isset($_POST['btnsave'])) {
       $insert->bindParam(':truck_trailer_number', $truck_trailer_number);
       $insert->bindParam(':customer', $customer);
       $insert->bindParam(':consignor', $consignor);
+      $insert->bindParam(':added_by', $user_name);
       $insert->bindParam(':order_type', $order_type);
       $insert->bindParam(':created_at', $created_at);
       $insert->bindParam(':opening', $opening);
@@ -240,7 +244,7 @@ if (isset($_POST['btnsave'])) {
 
                           foreach ($rows as $row) :
                           ?>
-                              <option value="<?php echo $row['cusid']; ?>"><?php echo $row['customer']; ?></option>
+                              <option value="<?php echo $row['customer']; ?>"><?php echo $row['customer']; ?></option>
                           <?php
                           endforeach;
                           ?>

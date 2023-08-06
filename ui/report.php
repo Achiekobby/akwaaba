@@ -5,29 +5,6 @@ session_start();
 
 include_once "header.php";
 
-//* count the number of customers in the system
-$query = "SELECT COUNT(*) AS total_customers FROM tbl_customer";
-$stmt = $pdo->query($query);
-$result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-//* Getting the count from the results of the query
-$total_customers = $result['total_customers'];
-
-//* count the number of consignor in the system
-$query_consignor  = "SELECT COUNT(*) AS total_consignors FROM tbl_consignor";
-$stmt_consignor   = $pdo->query($query_consignor);
-$result_consignor = $stmt_consignor->fetch(PDO::FETCH_ASSOC);
-
-//* Getting the count from the result_consignors of the query
-$total_consignor = $result_consignor['total_consignors'];
-
-//* count the number of consignor in the system
-$query_bills  = "SELECT COUNT(*) AS total_bills FROM tbl_product";
-$stmt_bills   = $pdo->query($query_bills);
-$result_bills = $stmt_bills->fetch(PDO::FETCH_ASSOC);
-
-//* Getting the count from the result_bills of the query
-$total_bills = $result_bills['total_bills'];
 
 ?>
 
@@ -73,12 +50,12 @@ $total_bills = $result_bills['total_bills'];
       <div class="container-fluid">
         <!-- Info boxes -->
         <div class="row">
-          <div class="col-lg-4 col-6">
+          <div class="col-lg-6 col-6">
 
           <div class="small-box bg-info">
           <div class="inner">
-          <h3><?php echo $total_customers; ?></h3>
-          <p>Customers Report</p>
+          <h3>Periodic Reports</h3>
+          <p>This section of the report shows the Quarterly, Midyear and Yearly Reports</p>
           </div>
           <div class="icon">
           <i class="ion ion-people"></i>
@@ -88,33 +65,19 @@ $total_bills = $result_bills['total_bills'];
           </div>
           </div>
 
-          <div class="col-lg-4 col-6">
+          <div class="col-lg-6 col-6">
+            <a href="custom_reports.php" class="small-box bg-warning">
+              <div class="inner">
+                <h3>Custom Sorting</h3>
+                <p>Click on this section to load the custom sorting section</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-arrow-circle-right"></i>
+              </div>
+              <!-- <a href="#" class="small-box-footer">View Billing Data <i class="fas fa-arrow-circle-right"></i></a> -->
+            </a>
+          </div>
 
-          <div class="small-box bg-success">
-          <div class="inner">
-          <h3><?php echo $total_consignor; ?><sup style="font-size: 20px">%</sup></h3>
-          <p>Consignors Total</p>
-          </div>
-          <div class="icon">
-          <i class="ion ion-water-outline"></i>
-          </div>
-          <!-- <a href="#" class="small-box-footer">View Report <i class="fas fa-arrow-circle-right"></i></a> -->
-          </div>
-          </div>
-
-          <div class="col-lg-4 col-6">
-
-          <div class="small-box bg-warning">
-          <div class="inner">
-          <h3><?php echo $total_bills; ?></h3>
-          <p>Bills</p>
-          </div>
-          <div class="icon">
-          <i class="fas fa-money-bill"></i>
-          </div>
-          <!-- <a href="#" class="small-box-footer">View Report <i class="fas fa-arrow-circle-right"></i></a> -->
-          </div>
-          </div>
 
           <!-- <div class="col-lg-3 col-6">
             <div class="small-box bg-danger">
